@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/heyymrdj/tomictasks/pkg/database"
@@ -19,11 +21,22 @@ var deleteListCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Println("Deleting list...")
-		name := args[0]
-		id := database.GetListIDByName(db, name)
-		database.DeleteList(db, id)
-		fmt.Println("List deleted successfully")
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Deleting list will also delete all tasks")
+		fmt.Println("Do you want to proceed (y/n): ")
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(strings.ToLower(input))
+		if input == "y" || input == "yes" {
+			fmt.Println("Deleting list...")
+			name := args[0]
+			id := database.GetListIDByName(db, name)
+			database.DeleteList(db, id)
+			fmt.Println("List deleted successfully")
+		} else {
+			fmt.Println("Operation canceled.")
+			return
+		}
+
 	},
 }
 

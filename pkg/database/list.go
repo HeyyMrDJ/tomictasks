@@ -162,6 +162,3 @@ func UpdateList(db *sql.DB, id int, name string) {
 	}
 	fmt.Println(affected)
 }
-
-func getConfirmation() {
-}
