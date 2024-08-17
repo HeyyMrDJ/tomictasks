@@ -120,6 +120,11 @@ func GetList(db *sql.DB, listID int) []Task {
 }
 
 func DeleteList(db *sql.DB, id int) {
+	tasks := GetList(db, id)
+	for _, task := range tasks {
+		fmt.Println("Deleting task:", task.Title)
+		DeleteTask(db, task.ID)
+	}
 	stmt, err := db.Prepare("DELETE FROM lists where id = ?")
 	if err != nil {
 		fmt.Println(err)
@@ -156,4 +161,7 @@ func UpdateList(db *sql.DB, id int, name string) {
 		fmt.Println(err)
 	}
 	fmt.Println(affected)
+}
+
+func getConfirmation() {
 }
