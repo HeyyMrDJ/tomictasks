@@ -13,6 +13,7 @@ func CreateTable(db *sql.DB) {
 		CREATE TABLE IF NOT EXISTS lists (
 		    id INTEGER PRIMARY KEY AUTOINCREMENT,
 		    name TEXT NOT NULL,
+		    parent_list INTEGER,
 		    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		);
 	`
@@ -74,6 +75,7 @@ func ConnectDB() *sql.DB {
 	if err != nil {
 		slog.Error(err.Error())
 	}
+	db.Exec("PRAGMA foreign_keys = ON;")
 
 	return db
 }

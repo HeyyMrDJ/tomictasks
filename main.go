@@ -16,5 +16,4 @@ func main() {
 	defer db.Close()
 	database.CreateTable(db)
 	cmd.Execute(db)
-	//database.CreateTask(db, "TEST", 0, "")
 }

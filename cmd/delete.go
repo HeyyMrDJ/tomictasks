@@ -15,11 +15,19 @@ var deleteCmd = &cobra.Command{
 	Short: "delete resources",
 }
 
-var deleteListCmd = &cobra.Command{
-	Use:   "list [listID]",
-	Short: "deletes an existing list",
-	Args:  cobra.MinimumNArgs(1),
+var deleteNodeCmd = &cobra.Command{
+	Use:   "node [nodeID]",
+	Short: "Deletes node and children",
 	Run: func(cmd *cobra.Command, args []string) {
+		nodes := strings.Split(args[0], "/")
+		path := strings.Join(nodes[:len(nodes)-1], "/") + "/"
+		switch path {
+		case "/":
+		default:
+			path = "/" + path
+		}
+		name := nodes[len(nodes)-1]
+		nodeID := database.GetNodeIDByPath(db, name, path)
 
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Println("Deleting list will also delete all tasks")
@@ -28,43 +36,15 @@ var deleteListCmd = &cobra.Command{
 		input = strings.TrimSpace(strings.ToLower(input))
 		if input == "y" || input == "yes" {
 			fmt.Println("Deleting list...")
-			name := args[0]
-			id := database.GetListIDByName(db, name)
-			database.DeleteList(db, id)
-			fmt.Println("List deleted successfully")
+			database.DeleteNode(db, nodeID)
 		} else {
 			fmt.Println("Operation canceled.")
 			return
-		}
-
-	},
-}
-
-var deleteTaskCmd = &cobra.Command{
-	Use:   "task [listID]",
-	Short: "deletes an existing Task",
-	Args:  cobra.MinimumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-
-		if strings.Contains(args[0], "/") {
-			task := strings.Split(args[0], "/")
-			listName := task[0]
-			taskName := task[1]
-			listID := database.GetListIDByName(db, listName)
-			taskID := database.GetTaskIDByName(db, taskName, listID)
-			database.DeleteTask(db, taskID)
-		} else {
-			fmt.Println("Deleting task...")
-			name := args[0]
-			taskID := database.GetTaskIDByName(db, name, 1)
-			database.DeleteTask(db, taskID)
-			fmt.Println("Task deleted successfully")
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-	deleteCmd.AddCommand(deleteTaskCmd)
-	deleteCmd.AddCommand(deleteListCmd)
+	deleteCmd.AddCommand(deleteNodeCmd)
 }
