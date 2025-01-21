@@ -34,7 +34,16 @@ var createNodeCmd = &cobra.Command{
 	},
 }
 
+var createTagCmd = &cobra.Command{
+	Use:   "tag [tag name] [tag value]",
+	Short: "Creates a tag",
+	Run: func(cmd *cobra.Command, args []string) {
+		database.CreateTag(db, args[0], args[1])
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(createCmd)
 	createCmd.AddCommand(createNodeCmd)
+	createCmd.AddCommand(createTagCmd)
 }

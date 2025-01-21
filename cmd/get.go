@@ -64,8 +64,28 @@ var getNodesCmd = &cobra.Command{
 	},
 }
 
+var getTagsCmd = &cobra.Command{
+	Use:   "tags",
+	Short: "Get all tags",
+	Run: func(cmd *cobra.Command, args []string) {
+		database.GetTags(db)
+	},
+}
+
+var getTagCmd = &cobra.Command{
+	Use:   "tag [tag Key] [tag Value]",
+	Short: "Get tag info and all nodes with this tag",
+	Run: func(cmd *cobra.Command, args []string) {
+		//tagID, _ := strconv.Atoi(args[0])
+		tagID := database.GetTagIDByName(db, args[0], args[1])
+		database.GetTag(db, tagID)
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(getCmd)
 	getCmd.AddCommand(getNodeCmd)
 	getCmd.AddCommand(getNodesCmd)
+	getCmd.AddCommand(getTagsCmd)
+	getCmd.AddCommand(getTagCmd)
 }

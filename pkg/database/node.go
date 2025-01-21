@@ -12,6 +12,7 @@ type Node struct {
 	ParentID *int
 	Path     string
 	Children []*Node
+	Tags     []Tag
 }
 
 func CreateNode(db *sql.DB, name string) {
